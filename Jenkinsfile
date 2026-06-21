@@ -17,14 +17,14 @@ pipeline {
 
         stage('Build Jar') {
             steps {
-                sh 'mvn clean package -DskipTests'
+                bat 'mvn clean package -DskipTests'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
-                sh "docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest"
+                bat "docker build -t %IMAGE_NAME%:%IMAGE_TAG% ."
+                bat "docker tag %IMAGE_NAME%:%IMAGE_TAG% %IMAGE_NAME%:latest"
             }
         }
 
@@ -37,10 +37,10 @@ pipeline {
                         passwordVariable: 'DOCKER_PASS'
                     )
                 ]) {
-                    sh '''
-                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                    docker push '"${IMAGE_NAME}:${IMAGE_TAG}"'
-                    docker push '"${IMAGE_NAME}:latest"'
+                    bat '''
+                    echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
+                    docker push %IMAGE_NAME%:%IMAGE_TAG%
+                    docker push %IMAGE_NAME%:latest
                     '''
                 }
             }
@@ -49,7 +49,7 @@ pipeline {
 
     post {
         always {
-            sh 'docker logout || true'
+            bat 'docker logout'
         }
     }
 }
