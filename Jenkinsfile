@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'MAVEN3'
+    }
+
     environment {
         IMAGE_NAME = "cparanjpe/blog-backend"
         IMAGE_TAG = "latest"
